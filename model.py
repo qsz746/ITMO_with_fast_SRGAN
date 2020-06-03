@@ -15,8 +15,10 @@ class FastSRGAN(object):
         """
         self.hr_height = args.hr_size
         self.hr_width = args.hr_size
-        self.lr_height = self.hr_height // 4  # Low resolution height
-        self.lr_width = self.hr_width // 4  # Low resolution width
+        # self.lr_height = self.hr_height // 4  # Low resolution height
+        # self.lr_width = self.hr_width // 4  # Low resolution width
+        self.lr_height = self.hr_height  # Low resolution height
+        self.lr_width = self.hr_width  # Low resolution width
         self.lr_shape = (self.lr_height, self.lr_width, 3)
         self.hr_shape = (self.hr_height, self.hr_width, 3)
         self.iterations = 0
@@ -196,11 +198,12 @@ class FastSRGAN(object):
         c2 = keras.layers.Add()([c2, c1])
         
         # Upsampling
-        u1 = deconv2d(c2)
-        u2 = deconv2d(u1)
+        # u1 = deconv2d(c2)
+        # u2 = deconv2d(u1)
 
         # Generate high resolution output
-        gen_hr = keras.layers.Conv2D(3, kernel_size=3, strides=1, padding='same', activation='tanh')(u2)
+        # gen_hr = keras.layers.Conv2D(3, kernel_size=3, strides=1, padding='same', activation='tanh')(u2)
+        gen_hr = keras.layers.Conv2D(3, kernel_size=3, strides=1, padding='same', activation='tanh')(c2)
 
         return keras.models.Model(img_lr, gen_hr)
 

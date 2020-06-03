@@ -1,2 +1,4 @@
 *.zip
 div2k/
+__pycache__/
+*.out

@@ -70,9 +70,10 @@ class DataLoader(object):
             high_res: A tf tensor of the high res image.
         """
 
-        low_res = tf.image.resize(high_res, 
-                                  [self.image_size // 4, self.image_size // 4], 
-                                  method='bicubic')
+        # low_res = tf.image.resize(high_res, 
+        #                           [self.image_size // 4, self.image_size // 4], 
+        #                           method='bicubic')
+        low_res = tf.identity(high_res)
 
         return low_res, high_res
 
