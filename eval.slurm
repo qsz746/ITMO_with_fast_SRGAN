@@ -27,8 +27,9 @@ tar xf ~/projects/def-panos/shared_itmo/bridge.tar -C $SLURM_TMPDIR/data
 
 
 python main.py \
-	--image_dir $SLURM_TMPDIR/data/bridge/HDR \
-	--hr_size 384 \
+	--input_dir $SLURM_TMPDIR/data/bridge/SDR \
+	--target_dir $SLURM_TMPDIR/data/bridge/HDR \
+	--image_size 384 \
 	--lr 1e-4 \
 	--save_iter 200 \
 	--epochs 10 \
