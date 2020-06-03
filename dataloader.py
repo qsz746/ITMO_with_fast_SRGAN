@@ -1,4 +1,5 @@
 import tensorflow as tf
+import cv2
 import os
 
 from tensorflow.python.ops import array_ops, math_ops
@@ -7,7 +8,7 @@ from tensorflow.python.ops import array_ops, math_ops
 class DataLoader(object):
     """Data Loader for the SR GAN, that prepares a tf data object for training."""
 
-    def __init__(self, image_dir, hr_image_size):
+    def __init__(self, input_dir, target_dir, image_size):
         """
         Initializes the dataloader.
         Args:
@@ -17,8 +18,9 @@ class DataLoader(object):
         Returns:
             The dataloader object.
         """
-        self.image_paths = [os.path.join(image_dir, x) for x in os.listdir(image_dir)]
-        self.image_size = hr_image_size
+        self.input_paths = [os.path.join(input_dir, x) for x in os.listdir(input_dir)]
+        self.target_paths = [os.path.join(target_dir, x) for x in os.listdir(target_dir)]
+        self.image_size = image_size
 
     def _parse_image(self, image_path):
         """
@@ -29,9 +31,13 @@ class DataLoader(object):
             image: A tf tensor of the loaded image.
         """
 
-        image = tf.io.read_file(image_path)
-        image = tf.image.decode_jpeg(image, channels=3)
-        image = tf.image.convert_image_dtype(image, tf.float32)
+        # image = tf.io.read_file(image_path)
+        # image = tf.image.decode_jpeg(image, channels=3)
+        # image = tf.image.convert_image_dtype(image, tf.float32)
+
+        image_path = image_path.numpy().decode('utf-8')
+        image = cv2.imread(image_path, cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
+        image = tf.convert_to_tensor(image, tf.float32)
 
         # Check if image is large enough
         if tf.keras.backend.image_data_format() == 'channels_last':
@@ -70,8 +76,8 @@ class DataLoader(object):
             high_res: A tf tensor of the high res image.
         """
 
-        # low_res = tf.image.resize(high_res, 
-        #                           [self.image_size // 4, self.image_size // 4], 
+        # low_res = tf.image.resize(high_res,
+        #                           [self.image_size // 4, self.image_size // 4],
         #                           method='bicubic')
         low_res = tf.identity(high_res)
 
@@ -103,16 +109,21 @@ class DataLoader(object):
         """
 
         # Generate tf dataset from high res image paths.
-        dataset = tf.data.Dataset.from_tensor_slices(self.image_paths)
+        input_dataset = tf.data.Dataset.from_tensor_slices(self.input_paths)
+        target_dataset = tf.data.Dataset.from_tensor_slices(self.target_paths)
 
         # Read the images
-        dataset = dataset.map(self._parse_image, num_parallel_calls=tf.data.experimental.AUTOTUNE)
+        # dataset = dataset.map(self._parse_image, num_parallel_calls=tf.data.experimental.AUTOTUNE)
+        input_dataset = input_dataset.map(lambda x: tf.py_function(func=self._parse_image, inp=[x], Tout=tf.float32))
+        target_dataset = target_dataset.map(lambda x: tf.py_function(func=self._parse_image, inp=[x], Tout=tf.float32))
 
         # Crop out a piece for training
-        dataset = dataset.map(self._random_crop, num_parallel_calls=tf.data.experimental.AUTOTUNE)
+        input_dataset = input_dataset.map(self._random_crop, num_parallel_calls=tf.data.experimental.AUTOTUNE)
+        target_dataset = target_dataset.map(self._random_crop, num_parallel_calls=tf.data.experimental.AUTOTUNE)
 
         # Generate low resolution by downsampling crop.
-        dataset = dataset.map(self._high_low_res_pairs, num_parallel_calls=tf.data.experimental.AUTOTUNE)
+        # dataset = dataset.map(self._high_low_res_pairs, num_parallel_calls=tf.data.experimental.AUTOTUNE)
+        dataset = tf.data.Dataset.zip(input_dataset, target_dataset)
 
         # Rescale the values in the input
         dataset = dataset.map(self._rescale, num_parallel_calls=tf.data.experimental.AUTOTUNE)
