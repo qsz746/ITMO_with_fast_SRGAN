@@ -18,8 +18,8 @@ class DataLoader(object):
         Returns:
             The dataloader object.
         """
-        self.input_paths = [os.path.join(input_dir, x) for x in os.listdir(input_dir)]
-        self.target_paths = [os.path.join(target_dir, x) for x in os.listdir(target_dir)]
+        self.input_paths = [os.path.join(input_dir, x) for x in sorted(os.listdir(input_dir))]
+        self.target_paths = [os.path.join(target_dir, x) for x in sorted(os.listdir(target_dir))]
         self.image_size = image_size
 
     def _parse_image(self, image_path):
