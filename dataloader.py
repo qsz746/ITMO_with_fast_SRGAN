@@ -123,7 +123,7 @@ class DataLoader(object):
 
         # Generate low resolution by downsampling crop.
         # dataset = dataset.map(self._high_low_res_pairs, num_parallel_calls=tf.data.experimental.AUTOTUNE)
-        dataset = tf.data.Dataset.zip(input_dataset, target_dataset)
+        dataset = tf.data.Dataset.zip((input_dataset, target_dataset))
 
         # Rescale the values in the input
         dataset = dataset.map(self._rescale, num_parallel_calls=tf.data.experimental.AUTOTUNE)
