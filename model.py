@@ -77,7 +77,8 @@ class FastSRGAN(object):
         third block of the model
         """
         # Get the vgg network. Extract features from Block 5, last convolution.
-        vgg = keras.applications.VGG19(weights="imagenet", input_shape=self.hr_shape, include_top=False)
+        # vgg = keras.applications.VGG19(weights="imagenet", input_shape=self.hr_shape, include_top=False)
+        vgg = keras.applications.VGG19(weights="./pretrained/vgg19_weights_tf_dim_ordering_tf_kernels_notop.h5", input_shape=self.hr_shape, include_top=False)
         vgg.trainable = False
         for layer in vgg.layers:
             layer.trainable = False
@@ -92,13 +93,13 @@ class FastSRGAN(object):
         Based on the Mobilenet design. Idea from Galteri et al."""
 
         def _make_divisible(v, divisor, min_value=None):
-                if min_value is None:
-                    min_value = divisor
-                new_v = max(min_value, int(v + divisor / 2) // divisor * divisor)
-                # Make sure that round down does not go down by more than 10%.
-                if new_v < 0.9 * v:
-                    new_v += divisor
-                return new_v
+            if min_value is None:
+                min_value = divisor
+            new_v = max(min_value, int(v + divisor / 2) // divisor * divisor)
+            # Make sure that round down does not go down by more than 10%.
+            if new_v < 0.9 * v:
+                new_v += divisor
+            return new_v
 
         def residual_block(inputs, filters, block_id, expansion=6, stride=1, alpha=1.0):
             """Inverted Residual block that uses depth wise convolutions for parameter efficiency.
@@ -196,7 +197,7 @@ class FastSRGAN(object):
         c2 = keras.layers.Conv2D(self.gf, kernel_size=3, strides=1, padding='same')(r)
         c2 = keras.layers.BatchNormalization()(c2)
         c2 = keras.layers.Add()([c2, c1])
-        
+
         # Upsampling
         # u1 = deconv2d(c2)
         # u2 = deconv2d(u1)
@@ -222,7 +223,7 @@ class FastSRGAN(object):
             if bn:
                 d = keras.layers.BatchNormalization(momentum=0.8)(d)
             d = keras.layers.LeakyReLU(alpha=0.2)(d)
-                
+
             return d
 
         # Input img
