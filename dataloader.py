@@ -51,7 +51,7 @@ class DataLoader(object):
 
         return image
 
-    def _random_crop(self, image):
+    def _random_crop(self, low_res, high_res):
         """
         Function that crops the image according a defined width
         and height.
