@@ -1,5 +1,5 @@
 -f /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/avx2
 -f /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic
-tensorflow_gpu==2.0
+tensorflow_gpu==2.0.1
 opencv-python
 numpy
