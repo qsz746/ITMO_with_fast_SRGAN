@@ -51,25 +51,43 @@ class DataLoader(object):
 
         return image
 
-    def _random_crop(self, low_res, high_res):
-        """
-        Function that crops the image according a defined width
-        and height.
-        Args:
-            image: A tf tensor of an image.
-        Returns:
-            image: A tf tensor of containing the cropped image.
-        """
+    
+     def _random_crop(self, low_res, high_res):
+         """
+         Function that rescales the pixel values to the -1 to 1 range.
+         For use with the generator output tanh function.
+         Args:
+             low_res: The tf tensor of the low res image.
+             high_res: The tf tensor of the high res image.
+         Returns:
+             low_res: The tf tensor of the low res image, rescaled.
+             high_res: the tf tensor of the high res image, rescaled.
+         """
 
-        # image = tf.image.random_crop(image, [self.image_size, self.image_size, 3])
-        Rangeoffset_h = array_ops.shape(low_res)[0] - self.image_size
-        Rangeoffset_w = array_ops.shape(low_res)[1] - self.image_size
-        offset_h = tf.random.uniform([1], 0, Rangeoffset_h, dtype=tf.int32, seed=None)[0]
-        offset_w = tf.random.uniform([1], 0, Rangeoffset_w, dtype=tf.int32, seed=None)[0]
-        low_res = tf.image.crop_to_bounding_box(low_res, offset_h, offset_w, self.image_size, self.image_size)
-        high_res = tf.image.crop_to_bounding_box(high_res, offset_h, offset_w, self.image_size, self.image_size)
 
-        return low_res, high_res
+
+         Rangeoffset_h=array_ops.shape(low_res)[0]-self.input_size
+         Rangeoffset_w=array_ops.shape(low_res)[1]-self.input_size
+
+         cond_h = math_ops.reduce_all(Rangeoffset_h > 0)
+         offset_h=tf.cond(cond_h, lambda:tf.random.uniform([1],0,Rangeoffset_h,dtype=tf.int32, seed=None)[0],lambda: 0)
+
+         cond_w = math_ops.reduce_all(Rangeoffset_w > 0)
+         offset_w=tf.cond(cond_w, lambda:tf.random.uniform([1],0,Rangeoffset_w,dtype=tf.int32, seed=None)[0],lambda: 0)
+
+
+
+         low_res = tf.image.crop_to_bounding_box(low_res, offset_h,offset_w, self.input_size, self.input_size)
+
+
+         offset_h_highres=int(offset_h* self.target_size/self.input_size)
+         offset_w_highres=int(offset_w* self.target_size/self.input_size)
+
+         high_res = tf.image.crop_to_bounding_box(high_res,offset_h_highres, offset_w_highres, self.target_size, self.target_size)
+
+         return low_res, high_res
+
+ 
 
     def _high_low_res_pairs(self, high_res):
         """
