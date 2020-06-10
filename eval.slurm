@@ -6,7 +6,7 @@
 #SBATCH --account=def-panos
 #SBATCH --job-name=SRGAN
 
-module load nixpkgs/16.09 gcc/7.3.0 opencv/4.2.0 python/3.7 cuda cudnn arch/avx512 StdEnv/2018.3
+module load nixpkgs/16.09 gcc/7.3.0 opencv/4.2.0 python/3.7 cuda/10.1 cudnn/7.6.5 arch/avx512 StdEnv/2018.3
 
 echo "Job start at $(date)"
 
@@ -29,7 +29,7 @@ tar xf ~/projects/def-panos/shared_itmo/bridge.tar -C $SLURM_TMPDIR/data
 python main.py \
 	--input_dir $SLURM_TMPDIR/data/bridge/SDR \
 	--target_dir $SLURM_TMPDIR/data/bridge/HDR \
-	--image_size 1072 \
+	--image_size 96 \
 	--lr 1e-4 \
 	--save_iter 200 \
 	--epochs 10 \
