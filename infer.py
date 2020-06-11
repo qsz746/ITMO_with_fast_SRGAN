@@ -25,25 +25,27 @@ def main():
     for image_path in image_paths:
         
         # Read image
-        low_res = cv2.imread(image_path, 1)
+        #low_res = cv2.imread(image_path, 1)
+        low_res = cv2.imread(image_path, cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
 
         # Convert to RGB (opencv uses BGR as default)
-        low_res = cv2.cvtColor(low_res, cv2.COLOR_BGR2RGB)
+        #low_res = cv2.cvtColor(low_res, cv2.COLOR_BGR2RGB)
 
         # Rescale to 0-1.
-        low_res = low_res / 255.0
+        #low_res = low_res / 255.0
 
         # Get super resolution image
         sr = model.predict(np.expand_dims(low_res, axis=0))[0]
 
         # Rescale values in range 0-255
-        sr = ((sr + 1) / 2.) * 255
+        #sr = ((sr + 1) / 2.) * 255
+        sr = (sr + 1)/2.
 
         # Convert back to BGR for opencv
-        sr = cv2.cvtColor(sr, cv2.COLOR_RGB2BGR)
+        #sr = cv2.cvtColor(sr, cv2.COLOR_RGB2BGR)
 
         # Save the results:
-        cv2.imwrite(os.path.join(args.output_dir, os.path.basename(image_path)), sr)
+        cv2.imwrite(os.path.join(args.output_dir, "up_"+os.path.basename(image_path)), sr, [cv2.IMWRITE_EXR_TYPE, cv2.IMWRITE_EXR_TYPE_HALF])
 
 
 if __name__ == '__main__':
