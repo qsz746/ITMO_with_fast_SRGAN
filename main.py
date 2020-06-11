@@ -7,15 +7,15 @@ from tensorflow import keras
 from datetime import datetime
 
 parser = ArgumentParser()
-parser.add_argument('--lr_image_dir', type=str, help='Path to low resolution image directory.')
-parser.add_argument('--hr_image_dir', type=str, help='Path to high resolution image directory.')
+parser.add_argument('--input_dir', type=str, help='Path to SDR image file.')
+parser.add_argument('--target_dir', type=str, help='Path to HDR image directory.')
+parser.add_argument('--image_size', default=384, type=int, help='image size.')
+
 parser.add_argument('--batch_size', default=4, type=int, help='Batch size for training.')
 parser.add_argument('--epochs', default=10, type=int, help='Number of epochs for training')
-parser.add_argument('--lr_size', default=384, type=int, help='Low resolution input size.')
-parser.add_argument('--hr_size', default=768, type=int, help='High resolution input size.')
+
 parser.add_argument('--lr', default=1e-4, type=float, help='Learning rate for optimizers.')
-parser.add_argument('--save_iter', default=50, type=int,
-                    help='The number of iterations to save the tensorboard summaries and models.')
+parser.add_argument('--save_iter', default=200, type=int, help='The number of iterations to save the tensorboard summaries and models.')
 
 parser.add_argument('--dis', type=str, help='Load pre-trained discriminator.')
 parser.add_argument('--gen', type=str, help='Load pre-trained generator.')
@@ -146,7 +146,7 @@ def main():
         os.makedirs('models')
 
     # Create the tensorflow dataset.
-    ds = DataLoader(args.lr_image_dir, args.lr_size, args.hr_image_dir, args.hr_size).dataset(args.batch_size)
+    ds = DataLoader(args.input_dir, args.target_dir, args.image_size).dataset(args.batch_size)
 
     # Initialize the GAN object.
     gan = FastSRGAN(args)
@@ -157,10 +157,10 @@ def main():
         print("Loading pre-trained discriminator...")
         gan.discriminator = keras.models.load_model(args.dis)
     else:
-    # Define the directory for saving pretrainig loss tensorboard summary.
+        # Define the directory for saving pretrainig loss tensorboard summary.
         pretrain_summary_writer = tf.summary.create_file_writer('logs/pretrain')
 
-    # Run pre-training.
+        # Run pre-training.
         pretrain_generator(gan, ds, pretrain_summary_writer)
 
     # Define the directory for saving the SRGAN training tensorbaord summary.
