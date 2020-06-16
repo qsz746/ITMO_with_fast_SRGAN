@@ -1,6 +1,6 @@
 import tensorflow as tf
-import cv2
 import os
+import cv2
 
 from tensorflow.python.ops import array_ops, math_ops
 
@@ -8,7 +8,7 @@ from tensorflow.python.ops import array_ops, math_ops
 class DataLoader(object):
     """Data Loader for the SR GAN, that prepares a tf data object for training."""
 
-    def __init__(self, input_dir, target_dir, image_size):
+    def __init__(self, lr_image_dir, lr_image_size, hr_image_dir, hr_image_size):
         """
         Initializes the dataloader.
         Args:
@@ -18,9 +18,30 @@ class DataLoader(object):
         Returns:
             The dataloader object.
         """
-        self.input_paths = [os.path.join(input_dir, x) for x in sorted(os.listdir(input_dir))]
-        self.target_paths = [os.path.join(target_dir, x) for x in sorted(os.listdir(target_dir))]
-        self.image_size = image_size
+        self.lr_image_paths = []
+        self.hr_image_paths = []
+
+        for d in [d for d in os.listdir(lr_image_dir) if os.path.isdir(os.path.join(lr_image_dir, d))]:
+            self.lr_image_paths += [os.path.join(lr_image_dir, d, "SDR", i) for i in sorted(os.listdir(os.path.join(lr_image_dir, d, "SDR")))]
+            self.hr_image_paths += [os.path.join(hr_image_dir, d, "HDR", i) for i in sorted(os.listdir(os.path.join(hr_image_dir, d, "HDR")))]
+
+        with open('train.txt', 'w') as f:
+            for i in self.lr_image_paths[:int(len(self.lr_image_paths)*0.9)]:
+                f.write('%s\n' % i)
+        
+        with open('test.txt', 'w') as f:
+            for i in self.lr_image_paths[int(len(self.lr_image_paths)*0.9):]:
+                f.write('%s\n' % i)
+
+        train_num = int(len(self.lr_image_paths)*0.9)
+        self.lr_image_paths = self.lr_image_paths[:train_num]
+        self.hr_image_paths = self.hr_image_paths[:train_num]
+        print(self.lr_image_paths[0])
+        print(self.hr_image_paths[0])
+        #self.lr_image_paths = [os.path.join(lr_image_dir, x) for x in sorted(os.listdir(lr_image_dir))]
+        #self.hr_image_paths = [os.path.join(hr_image_dir, x) for x in sorted(os.listdir(hr_image_dir))]
+        self.lr_image_size = lr_image_size
+        self.hr_image_size = hr_image_size
 
     def _parse_image(self, image_path):
         """
@@ -31,14 +52,15 @@ class DataLoader(object):
             image: A tf tensor of the loaded image.
         """
 
-        # image = tf.io.read_file(image_path)
-        # image = tf.image.decode_jpeg(image, channels=3)
-        # image = tf.image.convert_image_dtype(image, tf.float32)
-
+        #image = tf.io.read_file(image_path)
+        #image = tf.image.decode_jpeg(image, channels=3)
+        #image = tf.image.convert_image_dtype(image, tf.float32)
+        
         image_path = image_path.numpy().decode('utf-8')
         image = cv2.imread(image_path, cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
         image = tf.convert_to_tensor(image, tf.float32)
 
+        """
         # Check if image is large enough
         if tf.keras.backend.image_data_format() == 'channels_last':
             shape = array_ops.shape(image)[:2]
@@ -48,46 +70,33 @@ class DataLoader(object):
 
         image = tf.cond(cond, lambda: tf.identity(image),
                         lambda: tf.image.resize(image, [self.image_size, self.image_size]))
-
+        """
         return image
-
     
-     def _random_crop(self, low_res, high_res):
-         """
-         Function that rescales the pixel values to the -1 to 1 range.
-         For use with the generator output tanh function.
-         Args:
-             low_res: The tf tensor of the low res image.
-             high_res: The tf tensor of the high res image.
-         Returns:
-             low_res: The tf tensor of the low res image, rescaled.
-             high_res: the tf tensor of the high res image, rescaled.
-         """
+    def _random_crop(self, low_res, high_res):
+        """
+        Function that crops the image according a defined width
+        and height.
+        Args:
+            image: A tf tensor of an image.
+        Returns:
+            image: A tf tensor of containing the cropped image.
+        """
 
-
-
-         Rangeoffset_h=array_ops.shape(low_res)[0]-self.input_size
-         Rangeoffset_w=array_ops.shape(low_res)[1]-self.input_size
-
-         cond_h = math_ops.reduce_all(Rangeoffset_h > 0)
-         offset_h=tf.cond(cond_h, lambda:tf.random.uniform([1],0,Rangeoffset_h,dtype=tf.int32, seed=None)[0],lambda: 0)
-
-         cond_w = math_ops.reduce_all(Rangeoffset_w > 0)
-         offset_w=tf.cond(cond_w, lambda:tf.random.uniform([1],0,Rangeoffset_w,dtype=tf.int32, seed=None)[0],lambda: 0)
-
-
-
-         low_res = tf.image.crop_to_bounding_box(low_res, offset_h,offset_w, self.input_size, self.input_size)
-
-
-         offset_h_highres=int(offset_h* self.target_size/self.input_size)
-         offset_w_highres=int(offset_w* self.target_size/self.input_size)
-
-         high_res = tf.image.crop_to_bounding_box(high_res,offset_h_highres, offset_w_highres, self.target_size, self.target_size)
-
-         return low_res, high_res
-
- 
+        #image = tf.image.random_crop(image, [self.image_size, self.image_size, 3])
+        #image = tf.image.random_crop(image, [self.hr_image_size, self.hr_image_size, 3])
+        lr_h=array_ops.shape(low_res)[0]-self.lr_image_size
+        lr_w=array_ops.shape(low_res)[1]-self.lr_image_size
+        offset_h=tf.random.uniform([1],0,lr_h,dtype=tf.int32, seed=None)[0]  
+        offset_w=tf.random.uniform([1],0,lr_w,dtype=tf.int32, seed=None)[0]
+        print(offset_h, offset_w)
+        low_res = tf.image.crop_to_bounding_box(low_res, offset_h, offset_w, self.lr_image_size, self.lr_image_size)
+        
+        offset_h_highres=int(offset_h* self.hr_image_size/self.lr_image_size)
+        offset_w_highres=int(offset_w* self.hr_image_size/self.lr_image_size)
+        high_res = tf.image.crop_to_bounding_box(high_res, offset_h_highres, offset_w_highres, self.hr_image_size,
+                                                 self.hr_image_size)
+        return low_res, high_res
 
     def _high_low_res_pairs(self, high_res):
         """
@@ -100,10 +109,9 @@ class DataLoader(object):
             high_res: A tf tensor of the high res image.
         """
 
-        # low_res = tf.image.resize(high_res,
-        #                           [self.image_size // 4, self.image_size // 4],
-        #                           method='bicubic')
-        low_res = tf.identity(high_res)
+        low_res = tf.image.resize(high_res, 
+                                  [self.hr_image_size// 2, self.hr_image_size // 2], 
+                                  method='bicubic')
 
         return low_res, high_res
 
@@ -133,26 +141,26 @@ class DataLoader(object):
         """
 
         # Generate tf dataset from high res image paths.
-        input_dataset = tf.data.Dataset.from_tensor_slices(self.input_paths)
-        target_dataset = tf.data.Dataset.from_tensor_slices(self.target_paths)
-
+        dataset_lr = tf.data.Dataset.from_tensor_slices(self.lr_image_paths)
+        dataset_hr = tf.data.Dataset.from_tensor_slices(self.hr_image_paths)
+        
         # Read the images
-        # dataset = dataset.map(self._parse_image, num_parallel_calls=tf.data.experimental.AUTOTUNE)
-        input_dataset = input_dataset.map(lambda x: tf.py_function(func=self._parse_image, inp=[x], Tout=tf.float32))
-        target_dataset = target_dataset.map(lambda x: tf.py_function(func=self._parse_image, inp=[x], Tout=tf.float32))
-
-        # Generate low resolution by downsampling crop.
-        # dataset = dataset.map(self._high_low_res_pairs, num_parallel_calls=tf.data.experimental.AUTOTUNE)
-        dataset = tf.data.Dataset.zip((input_dataset, target_dataset))
+        #dataset = dataset.map(self._parse_image, num_parallel_calls=tf.data.experimental.AUTOTUNE)
+        dataset_lr = dataset_lr.map(lambda x: tf.py_function(func=self._parse_image, inp=[x], Tout=tf.float32), num_parallel_calls=tf.data.experimental.AUTOTUNE)
+        dataset_hr = dataset_hr.map(lambda x: tf.py_function(func=self._parse_image, inp=[x], Tout=tf.float32), num_parallel_calls=tf.data.experimental.AUTOTUNE)
+        dataset = tf.data.Dataset.zip((dataset_lr, dataset_hr))
 
         # Crop out a piece for training
         dataset = dataset.map(self._random_crop, num_parallel_calls=tf.data.experimental.AUTOTUNE)
+
+        # Generate low resolution by downsampling crop.
+        #dataset = dataset.map(self._high_low_res_pairs, num_parallel_calls=tf.data.experimental.AUTOTUNE)
 
         # Rescale the values in the input
         dataset = dataset.map(self._rescale, num_parallel_calls=tf.data.experimental.AUTOTUNE)
 
         # Batch the input, drop remainder to get a defined batch size.
         # Prefetch the data for optimal GPU utilization.
-        dataset = dataset.shuffle(30).batch(batch_size, drop_remainder=True).prefetch(tf.data.experimental.AUTOTUNE)
+        dataset = dataset.shuffle(10).batch(batch_size, drop_remainder=True).prefetch(tf.data.experimental.AUTOTUNE)
 
         return dataset
