@@ -8,7 +8,7 @@ from tensorflow.python.ops import array_ops, math_ops
 class DataLoader(object):
     """Data Loader for the SR GAN, that prepares a tf data object for training."""
 
-    def __init__(self, input_dir, image_size, target_dir):
+    def __init__(self, input_dir,target_dir,image_size,):
         """
         Initializes the dataloader.
         Args:
