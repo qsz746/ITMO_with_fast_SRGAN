@@ -24,4 +24,4 @@ echo "Inference..."
 python infer.py \
 --image_dir "/home/sizhuoqi/projects/def-panos/sizhuoqi/ITMO_with_fast_SRGAN/images" \
 --output_dir "/home/sizhuoqi/projects/def-panos/sizhuoqi/ITMO_with_fast_SRGAN/output" \
---gen "models/20200616091300_28500_generator.h5"
+--gen "/home/sizhuoqi/projects/def-panos/sizhuoqi/ITMO_with_fast_SRGAN//models/20200619090353_1400_generator.h5" \
