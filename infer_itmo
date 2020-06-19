@@ -21,7 +21,8 @@ export LD_LIBRARY_PATH={$LD_LIBRARY_PATH}:$CUDA_HOME/lib64:/cvmfs/soft.computeca
 cd /home/sizhuoqi/projects/def-panos/sizhuoqi/ITMO_with_fast_SRGAN
 echo $PWD
 echo "Inference..."
-python infer_itmo.py\
---image_dir images  "/home/sizhuoqi/projects/def-panos/sizhuoqi/ITMO_with_fast_SRGAN/images"\
---output_dir output "/home/sizhuoqi/projects/def-panos/sizhuoqi/ITMO_with_fast_SRGAN/output"\
+python infer.py
+
+--image_dir "/home/sizhuoqi/projects/def-panos/sizhuoqi/ITMO_with_fast_SRGAN/images"
+--output_dir "/home/sizhuoqi/projects/def-panos/sizhuoqi/ITMO_with_fast_SRGAN/output"\
 --gen "models/20200616091300_28500_generator.h5"
