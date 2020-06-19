@@ -1,7 +1,7 @@
 Before you run:
 
 1. You have to put VGG vgg19_weights_tf_dim_ordering_tf_kernels_notop.h5 in pretrained as we did before.
-2. You have to modify $USERS in train_itmo, use you own $USERS.
+2. You have to modify all the $USER in train_itmo, use you own $USER.
 
 sbatch train_itmo
 
