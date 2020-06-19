@@ -1,7 +1,7 @@
 Before you run:
 
 1. You have to put VGG vgg19_weights_tf_dim_ordering_tf_kernels_notop.h5 in pretrained as we did before.
-2. You have to modify all the sizhuoqi in train_itmo, use you own $USER. sizhuoqi is my own $USER.
+2. You have to modify all the sizhuoqi line30, 35,36 in train_itmo, use you own $USER. sizhuoqi is my own $USER.
 
 sbatch train_itmo
 
