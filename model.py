@@ -13,12 +13,12 @@ class FastSRGAN(object):
         Returns:
             None
         """
-        self.hr_height = args.hr_image_size
-        self.hr_width = args.hr_image_size
+        self.hr_height = args.hr_size
+        self.hr_width = args.hr_size
         # self.lr_height = self.hr_height // 4  # Low resolution height
         # self.lr_width = self.hr_width // 4  # Low resolution width
-        self.lr_height = args.lr_image_size  # Low resolution height
-        self.lr_width = args.lr_image_size  # Low resolution width
+        self.lr_height = args.lr_size  # Low resolution height
+        self.lr_width = args.lr_size  # Low resolution width
         self.lr_shape = (self.lr_height, self.lr_width, 3)
         self.hr_shape = (self.hr_height, self.hr_width, 3)
         self.iterations = 0

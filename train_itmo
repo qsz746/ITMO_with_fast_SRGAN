@@ -27,11 +27,11 @@ tar xf ~/projects/def-panos/shared_itmo/bridge.tar -C $SLURM_TMPDIR/data
 
 
 
-cd /home/sizhuoqi/scratch/ITMO_with_fast_SRGAN
+cd /home/sizhuoqi/projects/def-panos/sizhuoqi/ITMO_with_fast_SRGAN
 echo $PWD
 echo "Training..."
 tensorboard --logdir="logs/train" --host 0.0.0.0 &
 python main_load.py \
---lr_image_dir "/home/$USER/projects/def-panos/shared_itmo_fixed" --lr_size 128 \
---hr_image_dir "/home/$USER/projects/def-panos/shared_itmo_fixed" --hr_size 128 \
+--lr_image_dir "/home/sizhuoqi/projects/def-panos/shared_itmo_fixed" --lr_size 128 \
+--hr_image_dir "/home/sizhuoqi/projects/def-panos/shared_itmo_fixed" --hr_size 128 \
 --batch_size 32 --epochs 500
