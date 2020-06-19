@@ -5,7 +5,16 @@ Before you run:
 3. You have to modify all the sihzuoqi in infer_itmo.
 
 
-sbatch train_itmo
+1. To train
+$ sbatch train_itmo
+
+2.  Download log files and use local tensorboard to visualize log files.
+$ tensorboard --logdir=logs
+
+3. Use pretrained model and see the output images
+The code will output a discriminator/generator pair every 50 iterations under directory models/. You have to run the infer_itmo after the trained weight is generated, since you need to give the path of the generater.h5 under "--gen" in the infer_itmo.
+
+$ sbatch infer_itmo
 
 # To contribute 
 - Folk the repo
