@@ -23,5 +23,5 @@ echo $PWD
 echo "Inference..."
 python infer.py \
 --image_dir "/home/sizhuoqi/projects/def-panos/sizhuoqi/ITMO_with_fast_SRGAN/images" \
---output_dir "/home/sizhuoqi/projects/def-panos/sizhuoqi/ITMO_with_fast_SRGAN/output" \
---gen "/home/sizhuoqi/projects/def-panos/sizhuoqi/ITMO_with_fast_SRGAN/models/20200619090353_1400_generator.h5" \
+--output_dir "/home/sizhuoqi/projects/def-panos/sizhuoqi/ITMO_with_fast_SRGAN/output2200" \
+--gen "/home/sizhuoqi/projects/def-panos/sizhuoqi/ITMO_with_fast_SRGAN/models/20200619092056_2200_generator.h5" \
