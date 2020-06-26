@@ -10,11 +10,20 @@ Link to the third-party codes used in the project (for example from GitHub) and 
 **pretrained**<br />
 To store VGG19 network.<br />
 
+**dataloader.py**<br />
+Data Loader prepares the data object for training.
+
 **models**<br />
 The code will output a discriminator/generator pair every 50 iterations under directory models/. <br />
 
 **train_itmo**<br />
 Batch file to train the network<br />
+
+**infer_itmo**<br />
+Batch inference allows us to generate predictions on a batch of samples such as testing images.
+
+**testingimages**<br />
+Images for testing.<br />
 
 **requirements.txt**<br />
 tensorflow==2.0.1<br />
