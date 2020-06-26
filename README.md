@@ -6,6 +6,21 @@ The operating systems used for the development and their versions.(Windows/ MacO
 The requirements/dependencies and their versions that are needed to run the code: opencv-python==4.1.1.26, numpy==1.17.2 <br />
 The name of the deep learning network used for the development VGG19. <br />
 Link to the third-party codes used in the project (for example from GitHub) and brief summary of that code. https://github.com/qsz746/ITMO_with_fast_SRGAN <br />
+
+**pretrained**<br />
+To store VGG19 network.<br />
+
+**models**<br />
+The code will output a discriminator/generator pair every 50 iterations under directory models/. <br />
+
+**train_itmo**<br />
+Batch file to train the network<br />
+
+**requirements.txt**<br />
+tensorflow==2.0.1<br />
+opencv-python==4.1.1.26<br />
+numpy==1.17.2<br />
+
 We used external computing services WestGrid, explain if it makes any difference to run them on the conventional PCs and laptops. <br />
 
 
