@@ -1,12 +1,12 @@
-The programming language used to develop the code Python and the version: python/3.6 
-Deep learning frameworks used: Keras/TensorFlow. 
-load nixpkgs/16.09  intel/2018.3  cuda/10.1 cudnn/7.6.5
-The version of that framework used: For example, tensorflow==2.0.1 .
-The operating systems used for the development and their versions.(Windows/ MacOS Catalina Version 10.15.5).
-The requirements/dependencies and their versions that are needed to run the code: opencv-python==4.1.1.26, numpy==1.17.2
-The name of the deep learning network used for the development VGG19.
-Link to the third-party codes used in the project (for example from GitHub) and brief summary of that code.
-We used external computing services WestGrid, explain if it makes any difference to run them on the conventional PCs and laptops.
+The programming language used to develop the code Python and the version: python/3.6 <br />
+Deep learning frameworks used: Keras/TensorFlow. <br />
+load nixpkgs/16.09  intel/2018.3  cuda/10.1 cudnn/7.6.5 <br />
+The version of that framework used: For example, tensorflow==2.0.1 . <br />
+The operating systems used for the development and their versions.(Windows/ MacOS Catalina Version 10.15.5). <br />
+The requirements/dependencies and their versions that are needed to run the code: opencv-python==4.1.1.26, numpy==1.17.2 <br />
+The name of the deep learning network used for the development VGG19. <br />
+Link to the third-party codes used in the project (for example from GitHub) and brief summary of that code. <br />
+We used external computing services WestGrid, explain if it makes any difference to run them on the conventional PCs and laptops. <br />
 
 
 # Before you run:
@@ -19,14 +19,14 @@ We used external computing services WestGrid, explain if it makes any difference
 operating system to use (including version), which data and their format and everything else that you think is essential for a third party to install and run your code to reproduce your results.
 
 ## For training
-The code will output a discriminator/generator pair every 50 iterations under directory models/.
+The code will output a discriminator/generator pair every 50 iterations under directory models/. <br />
 `$ sbatch train_itmo`
 
 ## Download log files and use local tensorboard to visualize log files.
 `$ tensorboard --logdir=logs`
 
 ## For testing, use pretrained model and see the output images
-We need to give the path of the pretrained generater.h5 under "--gen" in the infer_itmo. And then run:
+We need to give the path of the pretrained generater.h5 under "--gen" in the infer_itmo. And then run: <br />
 
 `$ sbatch infer_itmo`
 
