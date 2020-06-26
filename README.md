@@ -1,7 +1,6 @@
 The programming language used to develop the code Python and the version: python/3.6 <br />
-The images for training and testing are in exr. form.
+The images for training and testing are in exr. form. <br />
 Deep learning frameworks used: Keras/TensorFlow. <br />
-load nixpkgs/16.09  intel/2018.3  cuda/10.1 cudnn/7.6.5 <br />
 The version of that framework used: For example, tensorflow==2.0.1 . <br />
 The operating systems used for the development and their versions.(Windows/ MacOS Catalina Version 10.15.5). <br />
 The requirements/dependencies and their versions that are needed to run the code: opencv-python==4.1.1.26, numpy==1.17.2 <br />
