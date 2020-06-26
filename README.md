@@ -1,4 +1,5 @@
 The programming language used to develop the code Python and the version: python/3.6 <br />
+The images for training and testing are in exr. form.
 Deep learning frameworks used: Keras/TensorFlow. <br />
 load nixpkgs/16.09  intel/2018.3  cuda/10.1 cudnn/7.6.5 <br />
 The version of that framework used: For example, tensorflow==2.0.1 . <br />
@@ -16,7 +17,6 @@ We used external computing services WestGrid, explain if it makes any difference
 3. You have to modify all the sihzuoqi in infer_itmo.
 4. mkdir output in your ITMO_with_fast_SRGAN directory, so you can see output images when the infer_itmo job is done.
 
-operating system to use (including version), which data and their format and everything else that you think is essential for a third party to install and run your code to reproduce your results.
 
 ## For training
 The code will output a discriminator/generator pair every 50 iterations under directory models/. <br />
