@@ -6,7 +6,7 @@ The version of that framework used: For example, tensorflow==2.0.1 . <br />
 The operating systems used for the development and their versions.(Windows/ MacOS Catalina Version 10.15.5). <br />
 The requirements/dependencies and their versions that are needed to run the code: opencv-python==4.1.1.26, numpy==1.17.2 <br />
 The name of the deep learning network used for the development VGG19. <br />
-Link to the third-party codes used in the project (for example from GitHub) and brief summary of that code. <br />
+Link to the third-party codes used in the project (for example from GitHub) and brief summary of that code. https://github.com/qsz746/ITMO_with_fast_SRGAN <br />
 We used external computing services WestGrid, explain if it makes any difference to run them on the conventional PCs and laptops. <br />
 
 
