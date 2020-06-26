@@ -1,3 +1,6 @@
+Project name: ITMO<br />
+Team members : Sizhuo Qi, Jing Cao, Dingqing Yang, Nikola Cucuk<br />
+
 The programming language used to develop the code Python and the version: python/3.6 <br />
 The images for training and testing are in exr. form. <br />
 Deep learning frameworks used: Keras/TensorFlow. <br />
@@ -30,7 +33,7 @@ tensorflow==2.0.1<br />
 opencv-python==4.1.1.26<br />
 numpy==1.17.2<br />
 
-We used external computing services WestGrid, explain if it makes any difference to run them on the conventional PCs and laptops. <br />
+We used external computing services WestGrid, it makes any difference to run them on the conventional PCs and laptops. Our project is running on beluga which belongs to westGrid. Thus, we can use the virtual environment and GPUs to run the training process. In another word, our own laptops don't have the capacity and ability to trian such a large dataset. <br />
 
 
 # Before you run:
